@@ -1,0 +1,170 @@
+<html>
+<head>
+    <title>Role Matrix Import</title>
+
+    <link rel="stylesheet" href="{{ request.contextPath }}/css/bootstrap.css">
+    <link rel="stylesheet" href="{{ request.contextPath }}/css/jsgrid.css">
+    <link rel="stylesheet" href="{{ request.contextPath }}/css/js-theme.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <style>
+        .header-color {
+            background-color: #5bb199 !important;
+            color: #fff;
+        }
+
+        .highlight {
+            background-color: #31b0d5;
+        }
+
+        .borderless td, .borderless th {
+            border: none;
+        }
+
+        .table th, .table td {
+            border-top: none !important;
+            border-left: none !important;
+        }
+
+        .fixed-table-container {
+            border: 0px;
+        }
+
+        .form-control {
+            width: 90% !important;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="jumbotron" style="margin: 10px;background-color : #d9edf7 !important;">
+        <div>
+            <h3 class="center-block" style="text-align: center;">Role Detail Mapping</h3>
+            <br/>
+            <div>
+                <form id="uploadForm">
+                    <table class="table borderless">
+                        <tr>
+                            <td><label>Select the Environment</label></td>
+                            <td>
+                                <select class="form-control" id="env" required>
+                                    <option value="">Select Environment</option>
+                                    <option value="htc">HTC Dev</option>
+                                    <option value="cts">Catetech Dev</option>
+                                    <option value="prod">Production</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label>Select Service Catalog</label></td>
+                            <td>
+                                <select class="form-control" id="categoryDropDown" required>
+                                    <option value="">Select Category</option>
+
+                                    {% for category in categories %}
+                                        <option value="{{ category.categoryName }}">{{ category.categoryName }}</option>
+                                    {% endfor %}
+
+                                </select>
+
+                                <i class="fa fa-spinner fa-spin" aria-hidden="true" id="categoryLoader"></i>
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label>Select Service Item</label></td>
+                            <td>
+                                <select id="templates" class="form-control" required>
+                                    <option value="">Select Template</option>
+                                </select>
+
+                                <i class="fa fa-spinner" aria-hidden="true" id="templateLoader"></i>
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label>Excel File</label></td>
+                            <td>
+                                <input required type="file" class="form-control" name="file" id="excelFile"
+                                       accept=".xls"
+                                       style="height: auto;">
+                                <b>( File should be in .xls format)</b>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label>Answer Starting Column(Column starts from 0)</label></td>
+                            <td><input type="number" id="answer_start_index" min="3" max="20" name="answer_start_index"
+                                       required
+                                       class="form-control"/>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td></td>
+                            <td>
+                                <input type="submit" id="previewButton" value="Preview"
+                                       class="btn btn-primary">
+                                <input type="reset" id="resetButton" value="Clear" class="btn btn-danger">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+
+            <textarea id="loggerArea" class="form-control" cols="10" style="display:none;"></textarea>
+
+            <div class="errorlog" style="color:red;">
+
+            </div>
+            <label id="totalCount" class="pull-right"></label>
+            <div id="js-grid-div"></div>
+
+
+            <hr/>
+            <label id="selectedRoleLabel" class="pull-left"></label>
+            <label id="totalDetailCount" class="pull-right"></label>
+            <div id="js-grid-role-detail"></div>
+
+
+            <div class="error" id="progress"
+                 style="color: red;font-style: normal;font-weight: bold;padding: 10px;text-align: center;"></div>
+
+            <hr/>
+            <div id="uploadDiv" class="row">
+                <div class="col-md-4">
+                    <label>Start : </label>
+                    <input type="number" name="uploadFrom" id="uploadFrom" class="form-control">
+                </div>
+                <div class="col-md-4"><label>End : </label>
+                    <input type="number" name="uploadTo" id="uploadTo" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                    <br/>
+                    <input type="button" class="btn btn-primary" value="Upload" id="upload">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var CONTEXTPATH = "{{ request.contextPath }}";
+    var SOCKETPORT = "8905"
+</script>
+
+
+<script src="{{ request.contextPath }}/js/jquery.js"></script>
+<script src="{{ request.contextPath }}/js/bootstrap.js"></script>
+<script src="{{ request.contextPath }}/js/js-grid.js"></script>
+<script src="{{ request.contextPath }}/js/socketio.js"></script>
+<script src="{{ request.contextPath }}/js/role-matrix.js"></script>
+</body>
+</html>
